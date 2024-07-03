@@ -23,10 +23,19 @@ const App = () => {
       important: Math.random() > 0.5,
     };
 
-    noteService.create(noteObject).then((returnedNote) => {
-      setNotes(notes.concat(returnedNote));
-      setNewNote("");
-    });
+    noteService
+      .create(noteObject)
+      .then((returnedNote) => {
+        setNotes(notes.concat(returnedNote));
+        setNewNote("");
+      })
+      .catch((error) => {
+        setErrorMessage(error.response.data.error);
+        console.log(error.response.data.error);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      });
   };
 
   const toggleImportanceOf = (id) => {
@@ -39,9 +48,8 @@ const App = () => {
         setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
       })
       .catch((error) => {
-        setErrorMessage(
-          `Note '${note.content}' was already removed from server`
-        );
+        setErrorMessage(error.response.data.error);
+        console.log(error.response.data.error);
         setTimeout(() => {
           setErrorMessage(null);
         }, 5000);
